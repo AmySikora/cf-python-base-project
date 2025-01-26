@@ -2,7 +2,7 @@
 
 This is the repository where I will be storing my tasks and achievements as I am learning Python.
 
-I will be adding folders for each step of the project that I am working on.
+I will be adding folders for each step of the project that I am work on.
 
 ## Description
 A simple script (`add.py`) that calculates the sum of two numbers entered by the user.
@@ -16,7 +16,7 @@ A simple script (`add.py`) that calculates the sum of two numbers entered by the
    python add.py
 # cf-python-base Project
 
-Welcome to my cf-python-base repository! This is where I’ll be documenting my progress and tasks as I learn Python. Each step of the project will be organized into folders.
+Welcome to my cf-python-base repository! This is where I’ll be documenting my progress and tasks as I learn Python. Each step of the project will be organized into folders to keep everything structured and easy to follow.
 
 ## Description
 This project includes a simple Python script (`add.py`) that prompts the user to input two numbers and then calculates and displays their sum. It’s a fundamental but essential step in practicing Python.
@@ -56,7 +56,7 @@ To run the script, follow these steps:
    Enter two numbers when prompted, and the script will display their sum.
 
 ## Next Steps
-I will continue adding more exercises and tasks to this repository as I progress through the course. Each step will be documented in its own folder for clarity.
+I will continue adding more tasks to this repository as I progress through the course. Each step will be documented in its own folder.
 
 Stay tuned for updates!
 

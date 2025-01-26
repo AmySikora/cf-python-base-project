@@ -1,4 +1,62 @@
-exot
-exit
-exit()
+# cf-python-base Project
+
+This is the repository where I will be storing my tasks and achievements as I am learning Python.
+
+I will be adding folders for each step of the project that I am working on.
+
+## Description
+A simple script (`add.py`) that calculates the sum of two numbers entered by the user.
+
+## How to Run
+1. Clone the repository.
+2. Navigate to the project folder.
+3. Activate the virtual environment.
+4. Run the script:
+   ```zsh
+   python add.py
+# cf-python-base Project
+
+Welcome to my cf-python-base repository! This is where I’ll be documenting my progress and tasks as I learn Python. Each step of the project will be organized into folders.
+
+## Description
+This project includes a simple Python script (`add.py`) that prompts the user to input two numbers and then calculates and displays their sum. It’s a fundamental but essential step in practicing Python.
+
+## How to Run
+To run the script, follow these steps:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   ```
+
+2. **Navigate to the Project Folder**:
+   ```bash
+   cd cf-python-base-project
+   ```
+
+3. **Activate the Virtual Environment**:
+   Ensure you have the virtual environment `cf-python-base` activated. If you haven’t already, create and activate it:
+   ```bash
+   workon cf-python-base
+   ```
+
+4. **Install Dependencies**:
+   If this is your first time running the project, install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. **Run the Script**:
+   Execute the script to calculate the sum of two numbers:
+   ```bash
+   python add.py
+   ```
+
+6. **Follow the Prompts**:
+   Enter two numbers when prompted, and the script will display their sum.
+
+## Next Steps
+I will continue adding more exercises and tasks to this repository as I progress through the course. Each step will be documented in its own folder for clarity.
+
+Stay tuned for updates!
 

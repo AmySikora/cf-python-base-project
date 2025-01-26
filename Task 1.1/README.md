@@ -55,6 +55,14 @@ To run the script, follow these steps:
 6. **Follow the Prompts**:
    Enter two numbers when prompted, and the script will display their sum.
 
+## Screenshots
+- **1_Python_Installed.png**: Verifies Python installation.
+- **2_Add.py.png**: Shows that the `add.py` script was created
+- **3_Created virtual environment.png**: Shows the virtual environment setup.
+- **4_Added  IPython_Shell.png**: Shows the IPython shell in action.
+- **5_cf-copy w: reqs.png**: Lists the requirements file generated using `pip freeze`.
+- **6_Added to GitHub w: folder.png**: Shows that the project is setup in GitHub and has a Task 1.1 folder
+
 ## Next Steps
 I will continue adding more tasks to this repository as I progress through the course. Each step will be documented in its own folder.
 

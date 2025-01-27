@@ -1,25 +1,9 @@
 # cf-python-base Project
 
-This is the repository where I will be storing my tasks and achievements as I am learning Python.
-
-I will be adding folders for each step of the project that I am work on.
-
-## Description
-A simple script (`add.py`) that calculates the sum of two numbers entered by the user.
-
-## How to Run
-1. Clone the repository.
-2. Navigate to the project folder.
-3. Activate the virtual environment.
-4. Run the script:
-   ```zsh
-   python add.py
-# cf-python-base Project
-
 Welcome to my cf-python-base repository! This is where I’ll be documenting my progress and tasks as I learn Python. Each step of the project will be organized into folders to keep everything structured and easy to follow.
 
 ## Description
-This project includes a simple Python script (`add.py`) that prompts the user to input two numbers and then calculates and displays their sum. It’s a fundamental but essential step in practicing Python.
+This project includes a simple Python script (`add.py`) that prompts the user to add two numbers and then it calculates and displays their sum. 
 
 ## How to Run
 To run the script, follow these steps:
@@ -65,6 +49,4 @@ To run the script, follow these steps:
 
 ## Next Steps
 I will continue adding more tasks to this repository as I progress through the course. Each step will be documented in its own folder.
-
-Stay tuned for updates!
 

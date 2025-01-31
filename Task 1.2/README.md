@@ -4,8 +4,11 @@
 - **cooking_time (int):** Contains cook time in minutes 
 - **ingredients (list):** Contains a number of ingredients, each of the str data type
 
-I will use a dictionaries to store the the above data, beacuse they are able to store srings, integers, and lists. They can also sclar and can be updated. 
+I will use dictionaries to store the above items, because they are able to store values, objects, srings, integers, lists, and other data. The can also be indexed by ideitifers and key, whch would make finding recipes and ingredients easier to access and update. 
+
+I think that the flexibilty that dictionaries provide make them the best choice for this task.
+
 
 **all_recipes = [ ]**
 
-For the outer structure, I will use a list of the recipe dictionaries sorted in numerical order. 
+For the outer structure, I will use lists to store the recipe dictionaries. They are simple to use and are updateable. 

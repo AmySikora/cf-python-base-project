@@ -1,5 +1,5 @@
 a = input("Enter a number: ")
-b = input("Enter another number to be added to the firsta; ")
+b = input("Enter another number to be added to the first; ")
 a = int(a)
 b = int(b)
 

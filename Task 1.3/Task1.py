@@ -1,6 +1,6 @@
 a = int(input("Enter a number: "))
 b = int(input("Enter another number: "))
-operator = input("Enter a (+ or -) to add or subtact the numbers: ")
+operator = input("Enter a (+ or -) sign to add or subtact the numbers: ")
 
 if operator == "+": 
     result = a + b

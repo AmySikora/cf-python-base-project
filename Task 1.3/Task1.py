@@ -4,8 +4,11 @@ operator = input("Enter a (+ or -) sign to add or subtact the numbers: ")
 
 if operator == "+": 
     result = a + b
-    print("The sum if these numbers is " + str(a + b))
+    print("The sum if these numbers is " + str(result))
 
-if operator == "-": 
+elif operator == "-": 
     result = a - b
-    print("The difference between these numbers is " - str(a - b))
+    print("The difference between these numbers is " + str(result))
+
+else:
+    print("Opps, only (+ or -) signs will work for this")

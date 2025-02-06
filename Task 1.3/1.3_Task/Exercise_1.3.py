@@ -46,7 +46,7 @@ def recipes():
         print("Cooking time (min):", recipe['cooking_time'])
         print("Ingredients:")
         for ingredient in recipe['ingredients']:
-            print(" ", ingredient)
+            print(" -", ingredient)
         print("Difficulty:", recipe['difficulty'])
 
     print_ingredients()

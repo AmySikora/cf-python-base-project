@@ -7,7 +7,7 @@ def recipes():
 
     # Recipe storage
     recipes_list = []
-    ingredients_set = set(0)
+    ingredients_set = set()
 
     def make_recipe():
         """

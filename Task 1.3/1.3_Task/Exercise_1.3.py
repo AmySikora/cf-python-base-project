@@ -2,7 +2,7 @@ def recipes():
     recipes_list = []
     ingredients_list = []
 
-    def take_recipe():
+    def make_recipe():
         name = input("Enter recipe name: ")
         cooking_time = int(input("Enter cooking time in minutes: "))
         ingredients = []
@@ -18,7 +18,7 @@ def recipes():
     num = int(input("What number of recipes would you like to enter?: "))
     
     for i in range(num):
-         recipe = take_recipe()
+         recipe = make_recipe()
          recipes_list.append(recipe)
 
          for ingredient in recipe['ingredients']:

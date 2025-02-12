@@ -64,10 +64,13 @@ except FileNotFoundError:
 except: 
     print(f"Error reading '{filename}'. Creating a new recipe file.")
     data = {"recipes_list": [], "all_ingredients": []}
-
+ # CLoses file   
+else: 
+    file.close()
 # Gets recipe and ingredients lists from dictionary
-recipes_list = data["recipes_list"]
-all_ingredients = data["all_ingredients"]
+finally: 
+    recipes_list = data["recipes_list"]
+    all_ingredients = data["all_ingredients"]
 
 # Asks the user how many recipes they’d like to enter
 while True:
@@ -81,7 +84,7 @@ while True:
         print("Please enter a valid number.")
 
 # Collect user recipes
-for _ in range(num_recipes):
+for i in range(num_recipes):
     recipe = take_recipe()
     recipes_list.append(recipe)
 

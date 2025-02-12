@@ -1,5 +1,6 @@
 import pickle
 
+
 # Function to display a recipe
 def display_recipe(recipe):
     print("\n----------------------------")

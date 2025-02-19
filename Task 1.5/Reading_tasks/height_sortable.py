@@ -9,8 +9,33 @@ class Height(object):
     
     def __lt__(self, other):
         height_inches_A = self.feet * 12 + self.inches
-        height_inches_B = other.feet * 12 + other.inches
+        height_inches_B =  other.feet * 12 + other.inches
         return height_inches_A < height_inches_B
+
+    def __le__(self, other):
+        height_inches_A = self.feet * 12 + self.inches
+        height_inches_B = other.feet * 12 + other.inches
+        return height_inches_A <= height_inches_B
+
+    def __eq__(self, other):
+        height_inches_A = self.feet * 12 + self.inches
+        height_inches_B = other.feet * 12 + other.inches
+        return height_inches_A == height_inches_B
+    
+    def __gt__(self, other):
+        height_inches_A = self.feet * 12 + self.inches
+        height_inches_B = other.feet * 12 + other.inches
+        return height_inches_A > height_inches_B
+
+    def __ge__(self, other):
+        height_inches_A = self.feet * 12 + self.inches
+        height_inches_B = other.feet * 12 + other.inches
+        return height_inches_A >= height_inches_B
+    
+    def __ne__(self, other):
+        height_inches_A = self.feet * 12 + self.inches
+        height_inches_B = other.feet * 12 + other.inches
+        return height_inches_A != height_inches_B
 
 height_1 = Height(4, 10)
 height_2 = Height(5, 6)
@@ -21,7 +46,7 @@ height_6 = Height(5, 6)
 
 heights = [height_1, height_2, height_3, height_4, height_5, height_6]
 
-heights = sorted(heights)
+heights = sorted(heights, reverse=True)
 for height in heights:
     print(height)
 

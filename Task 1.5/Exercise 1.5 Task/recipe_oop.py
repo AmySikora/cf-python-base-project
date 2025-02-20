@@ -49,7 +49,6 @@ class Recipe:
         return output 
     
     # Searches for recipes with an ingredient
-    @staticmethod
     def recipe_search(data, search_term):
         print(f"\nRecipes containing '{search_term}':")
         found = False

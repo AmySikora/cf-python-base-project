@@ -12,7 +12,7 @@ class Recipe:
 
     # Adds ingredients and updates to add new ingredients
     def add_ingredients(self, *ingredients):
-        self.ingredients.extend(ingredients)  # Adds ingredients to list
+        self.ingredients.append(ingredients)  # Adds ingredients to list
         self.update_all_ingredients()  # Updates all ingredients 
         self.calculate_difficulty()  # Updates difficulty level if ingredients change
 
@@ -50,14 +50,14 @@ class Recipe:
     
     # Searches for recipes with an ingredient
     def recipe_search(data, search_term):
-        print(f"\nRecipes containing '{search_term}':")
+        print("\nRecipes containing '" + search_term + "':")
         found = False
         for recipe in data:
             if recipe.search_ingredient(search_term):
                 print(recipe)
                 found = True
         if not found:
-            print("No recipes found with that ingredient.")
+            print("No recipes were found with that ingredient.")
 
 # Main Code
 

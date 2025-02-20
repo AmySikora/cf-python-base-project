@@ -12,9 +12,8 @@ class Recipe:
 
     # Adds ingredients to recipe and updates ingredient list
     def add_ingredients(self, *ingredients): 
-        for ingredients in ingredients:
-            self.ingredients.append(ingredient) # Adds each ingredient to list
-        self.update_all_ingredients()   # Updates global ingredients
+        self.ingredients.extend(ingredient) # Adds each ingredient to list
+        self.update_all_ingredients()  # Updates the global ingredient set
         self.calculate_difficulty() # Updates difficulty if number of ingredients change
 
     # Determines the difficulty of recipe based on cooking_time and ingredient number
@@ -27,33 +26,6 @@ class Recipe:
             self.difficulty = "Intermediate"
         else:
             self.difficulty = "Hard"
-
-    # Get recipe name
-    def get_name(self):
-            # Return recipe name
-            return self.name
-
-    # Set recipe name
-    def set_name(self, name):
-        self.name = name   
-
-    # Return recipe cooking time
-    def get_cooking_time(self):
-        return self.cooking_time  
-
-    # Set recipe cooking time
-    def set_cooking_time(self, cooking_time):
-        self.cooking_time = cooking_time  
-
-    # Return recipe ingredients
-    def get_ingredients(self):
-        return self.ingredients
-    
-    # Return recipe difficulty
-    def get_difficulty(self):
-        if self.difficulty is None:
-            self.calculate_difficulty()
-        return self.difficulty
     
     # Search for recipe ingredient
     def search_ingredient(self, ingredient):
@@ -61,25 +33,31 @@ class Recipe:
             
     # Updates all_ingresients class variable to include recipe ingredients
     def update_all_ingredients(self):
-        for ingredient in self.ingredients:
-            Recipe.all_ingredients.add(ingredient)
+        Recipe.all_ingredients.update(self.ingredients)
     
     # String that represens the printed recipe 
     def __str__(self):
         output = "Name: " + self.name + \
             "\nCooking Time (in minutes): " + str(self.cooking_time) + \
-            "\nIngredients: " + str(self.ingredients) + \
+            "\nIngredients: " + ', '.join(self.ingredients) + \
             "\nDifficulty: " + str(self.difficulty) + \
-            "\n_________________________"
+            "\n_________________________\n"
+
         for ingredient in self.ingredients:
             output += "- " + ingredient + "\n"
-            return output
+
+        return output
 
     # Define search for a recipe ingredient
     def recipe_search(data, search_term):
+        print(f"\nRecipes containing '{search_term}':")
+        found = False
         for recipe in data:
             if recipe.search_ingredient(search_term):
                 print(recipe)
+                found = True
+        if not found:
+            print("No recipes found with that ingredient.")
 
 # Main Code
 
@@ -104,6 +82,7 @@ print(banana_smoothie)
 recipes_list = [tea, coffee, cake, banana_smoothie]
 
 # Print string of recipes
+print("\nAll Recipes:")
 for recipe in recipes_list:
     print(recipe)
 

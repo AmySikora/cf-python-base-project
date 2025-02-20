@@ -12,7 +12,7 @@ class Recipe:
 
     # Adds ingredients and updates to add new ingredients
     def add_ingredients(self, *ingredients):
-        self.ingredients.append(ingredients)  # Adds ingredients to list
+        self.ingredients.extend(ingredients)  # Adds ingredients to list
         self.update_all_ingredients()  # Updates all ingredients 
         self.calculate_difficulty()  # Updates difficulty level if ingredients change
 

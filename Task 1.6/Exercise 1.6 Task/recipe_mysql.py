@@ -206,7 +206,7 @@ def delete_recipe(conn, cursor):
     # Delete recipe
     cursor.execute("DELETE FROM recipes WHERE id = %s", (recipe_id,))
     conn.commit()  # Save changes
-    
+
 # This is the loop running in the main menu
 # Loop continues as long as user doesn't quit
 def main_menu(conn, cursor):
@@ -246,7 +246,7 @@ conn = mysql.connector.connect(
     host='localhost',
     user='cf-python',
     passwd='P@ssword123!',
-    database='my_database'
+    database='task_database'
 )
 
 cursor = conn.cursor()

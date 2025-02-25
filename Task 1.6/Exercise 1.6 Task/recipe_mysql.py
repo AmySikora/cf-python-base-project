@@ -1,3 +1,5 @@
+import mysql.connector
+
 # Defines cooking difficulty    
 def calc_difficulty(cooking_time, num_ingredients): 
     if cooking_time < 10 and num_ingredients < 4:
@@ -38,7 +40,7 @@ def create_recipe(conn, cursor):
         if ingredient not in ingredients:
             ingredients.append(ingredient)
         else:
-            print(f"{ingredient} is already in the list. Skipping duplicate.")
+            print(ingredient + " is already in the list. Skipping duplicate.")
 
     # Convert ingredients list to a comma-separated string
     ingredients_str = ", ".join(ingredients)
@@ -58,19 +60,159 @@ def create_recipe(conn, cursor):
 
     print("\nRecipe added successfully!")
 
-    return {
-        'name': name,
-        'cooking_time': cooking_time,
-        'ingredients': ingredients,
-        'difficulty': difficulty
-    }
+# Defines search for recipe ingredient
+def search_recipe(conn, cursor):
+    # Search database for ingredients
+    cursor.execute("SELECT ingredients FROM recipes")
+    results = cursor.fetchall() # Fetch data in rows
+    
+    # Creating a list for ingredients
+    all_ingredients = set()
 
+    # Process results
+    for row in results:
+        ingredients_list = row[0].split(", ") # Convert string back to list
+        all_ingredients.update(ingredients_list) # Add ingredients
+
+    # Sort list of ingredients
+    all_ingredients = sorted(list(all_ingredients))
+
+    # Showsingredients
+    print("\nAvailable Ingredients:")
+    for index, ingredient in enumerate(all_ingredients):
+        print(str(index) + ". " + ingredient)
+
+    # Ask user to select an ingredient
+    while True:
+        try:
+            num = int(input("\nEnter the number of the ingredient to search for: "))
+            if 0 <= num < len(all_ingredients):
+                ingredient_searched = all_ingredients[num]  # Correct variable name
+                break
+            else:
+                print("Invalid choice. Please enter a valid number from the list.")
+        except ValueError:
+            print("Only numbers are allowed. Please try again.")
+
+    # Search database for recipes with the ingredient
+    query = "SELECT name, ingredients, cooking_time, difficulty FROM recipes WHERE ingredients LIKE %s"
+    cursor.execute(query, ('%' + ingredient_searched + '%',))
+    recipes_found = cursor.fetchall()  # Get all recipe matches
+
+    # Show results
+    if recipes_found:
+        print("\n" + str(len(recipes_found)) + " Recipe(s) found with " + ingredient_searched + ":")
+        for recipe in recipes_found:
+            print("\n--------------------------------")
+            print("Name: " + recipe[0])
+            print("Ingredients: " + recipe[1])
+            print("Cooking Time: " + str(recipe[2]) + " minutes")
+            print("Difficulty: " + recipe[3])
+            print("--------------------------------")
+    else:
+        print("No recipes found with this ingredient.")
+
+# Define update recipe function
+def update_recipe(conn, cursor):
+    # Fetch all recipes
+    cursor.execute("SELECT id, name FROM recipes")
+    all_recipes = cursor.fetchall()  # Fetch data as tuples
+    
+    if not all_recipes:
+        return  # No recipes found, exit function
+
+    # Ask user to select a recipe by ID
+    while True:
+        try:
+            recipe_id = int(input("\nEnter the ID number of the recipe you would like to update: "))
+            cursor.execute("SELECT * FROM recipes WHERE id = %s", (recipe_id,))
+            selected_recipe = cursor.fetchone()
+            if selected_recipe:
+                break
+        except ValueError:
+            pass  # Invalid input, continue loop
+
+    # Ask what to update
+    while True:
+        print("\nEnter your choice: 1 - Name, 2 - Cooking Time, 3 - Ingredients")
+        choice = input().strip()
+        if choice in ['1', '2', '3']:
+            break
+
+    # Update based on choice 
+    if choice == '1':  # Updates name
+        new_name = input("Enter the new name of the recipe: ").strip()
+        cursor.execute("UPDATE recipes SET name = %s WHERE id = %s", (new_name, recipe_id))
+
+    elif choice == '2':  # Updates cooking time
+        while True:
+            try:
+                new_cooking_time = int(input("Enter new cooking time (in minutes): "))  
+                break
+            except ValueError:
+                pass  # Invalid input, continue loop
+
+        # Recalculate difficulty
+        cursor.execute("SELECT ingredients FROM recipes WHERE id = %s", (recipe_id,))
+        ingredients_str = cursor.fetchone()[0]
+        num_ingredients = len(ingredients_str.split(", "))
+        new_difficulty = calc_difficulty(new_cooking_time, num_ingredients)
+
+        cursor.execute("UPDATE recipes SET cooking_time = %s, difficulty = %s WHERE id = %s",
+                       (new_cooking_time, new_difficulty, recipe_id))
+    
+    elif choice == '3':  # Updates ingredients
+        new_ingredients = input("Enter new ingredients (separated by commas): ").strip().lower()
+
+        # Recalculate difficulty
+        num_ingredients = len(new_ingredients.split(", "))
+        cursor.execute("SELECT cooking_time FROM recipes WHERE id = %s", (recipe_id,))
+        cooking_time = cursor.fetchone()[0]
+        new_difficulty = calc_difficulty(cooking_time, num_ingredients)
+
+        cursor.execute("UPDATE recipes SET ingredients = %s, difficulty = %s WHERE id = %s",
+                       (new_ingredients, new_difficulty, recipe_id))
+    
+    # Commit the changes
+    conn.commit()
+
+
+# Define delete recipe function
+def delete_recipe(conn, cursor):
+    # Fetch all recipes
+    cursor.execute("SELECT id, name FROM recipes")
+    all_recipes = cursor.fetchall()  # Fetch data as tuples
+
+    if not all_recipes:
+        return  # No recipes found, exit function
+
+    # Ask user to select a recipe by ID
+    while True:
+        try:
+            recipe_id = int(input("\nEnter the ID number of the recipe you would like to delete: "))
+            cursor.execute("SELECT * FROM recipes WHERE id = %s", (recipe_id,))
+            selected_recipe = cursor.fetchone()
+            if selected_recipe:
+                break
+        except ValueError:
+            pass  # Invalid input, continue loop
+
+    # Confirm deletion
+    print("\nAre you sure you want to delete this recipe? (yes/no)")
+    confirm = input().strip().lower()
+    if confirm != 'yes':
+        return  # Cancel deletion
+
+    # Delete recipe
+    cursor.execute("DELETE FROM recipes WHERE id = %s", (recipe_id,))
+    conn.commit()  # Save changes
+    
 # This is the loop running in the main menu
 # Loop continues as long as user doesn't quit
 def main_menu(conn, cursor):
     choice = ""  # Define choice before loop starts
 
-    while choice != 'quit':  # Correct indentation
+    while choice != 'quit':  # Keep running until user quits
         print("\nMain Menu")
         print("=====================================")
         print("What would you like to do? Pick a choice!")
@@ -100,8 +242,6 @@ def main_menu(conn, cursor):
             print("Invalid choice. Please enter one of the following numbers: 1, 2, 3, 4, or 'quit'.")    
 
 # Database connection setup
-import mysql.connector
-
 conn = mysql.connector.connect(
     host='localhost',
     user='cf-python',

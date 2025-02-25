@@ -217,15 +217,19 @@ def delete_recipe(conn, cursor):
         except ValueError:
             pass  # Invalid input, continue loop
 
-    # Confirm deletion
+     # Confirm deletion
     print("\nAre you sure you want to delete this recipe? (yes/no)")
     confirm = input().strip().lower()
     if confirm != 'yes':
+        print("\nRecipe deletion canceled.")
         return  # Cancel deletion
 
     # Delete recipe
     cursor.execute("DELETE FROM recipes WHERE id = %s", (recipe_id,))
     conn.commit()  # Save changes
+
+    # Print confirmation message after successful deletion
+    print("\nRecipe ID", recipe_id, "was successfully deleted!")
 
 # This is the loop running in the main menu
 # Loop continues as long as user doesn't quit

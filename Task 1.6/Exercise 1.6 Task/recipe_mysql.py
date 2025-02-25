@@ -119,7 +119,13 @@ def update_recipe(conn, cursor):
     all_recipes = cursor.fetchall()  # Fetch data as tuples
     
     if not all_recipes:
+        print("\nNo recipes found in the database.")
         return  # No recipes found, exit function
+
+    # Display the available recipes with their IDs
+    print("\nAvailable Recipes:")
+    for recipe in all_recipes:
+        print("ID:", recipe[0], "- Name:", recipe[1])
 
     # Ask user to select a recipe by ID
     while True:
@@ -129,15 +135,21 @@ def update_recipe(conn, cursor):
             selected_recipe = cursor.fetchone()
             if selected_recipe:
                 break
+            else:
+                print("Recipe ID", recipe_id, "does not exist. Please try again.")
         except ValueError:
-            pass  # Invalid input, continue loop
+            print("Only numbers are allowed. Please try again.")
 
     # Ask what to update
     while True:
-        print("\nEnter your choice: 1 - Name, 2 - Cooking Time, 3 - Ingredients")
-        choice = input().strip()
+        print("\nWhat would you like to update?")
+        print("1 - Name")
+        print("2 - Cooking Time")
+        print("3 - Ingredients")
+        choice = input("Enter your choice (1/2/3): ").strip()
         if choice in ['1', '2', '3']:
             break
+        print("Invalid choice. Please enter 1, 2, or 3.")
 
     # Update based on choice 
     if choice == '1':  # Updates name
@@ -150,7 +162,7 @@ def update_recipe(conn, cursor):
                 new_cooking_time = int(input("Enter new cooking time (in minutes): "))  
                 break
             except ValueError:
-                pass  # Invalid input, continue loop
+                print("Invalid input. Please enter a number.")
 
         # Recalculate difficulty
         cursor.execute("SELECT ingredients FROM recipes WHERE id = %s", (recipe_id,))
@@ -175,6 +187,8 @@ def update_recipe(conn, cursor):
     
     # Commit the changes
     conn.commit()
+    print("\nRecipe ID", recipe_id, "was successfully updated!")
+
 
 
 # Define delete recipe function

@@ -198,7 +198,13 @@ def delete_recipe(conn, cursor):
     all_recipes = cursor.fetchall()  # Fetch data as tuples
 
     if not all_recipes:
+        print("\nNo recipes found in the database.")
         return  # No recipes found, exit function
+
+    # Display the available recipes with their IDs
+    print("\nAvailable Recipes:")
+    for recipe in all_recipes:
+        print("ID:", recipe[0], "- Name:", recipe[1])
 
     # Ask user to select a recipe by ID
     while True:

@@ -265,12 +265,25 @@ def main_menu(conn, cursor):
         else:
             print("Invalid choice. Please enter one of the following numbers: 1, 2, 3, 4, or 'quit'.")    
 
-# Database connection setup
+import os
+import mysql.connector
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Get database credentials securely
+DB_HOST = os.getenv("DB_HOST")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+
+# Establish database connection
 conn = mysql.connector.connect(
-    host='localhost',
-    user='cf-python',
-    passwd='P@ssword123!',
-    database='task_database'
+    host=DB_HOST,
+    user=DB_USER,
+    passwd=DB_PASSWORD,
+    database=DB_NAME
 )
 
 cursor = conn.cursor()

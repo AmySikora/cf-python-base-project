@@ -1,5 +1,29 @@
+import os
 import mysql.connector
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+
+# Securely retrieve database credentials
+DB_HOST = os.getenv("DB_HOST")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+
+# Establish database connection
+try:
+    conn = mysql.connector.connect(
+        host=DB_HOST,
+        user=DB_USER,
+        passwd=DB_PASSWORD,
+        database=DB_NAME
+    )
+    cursor = conn.cursor()
+except mysql.connector.Error as err:
+    print(f"Error: {err}")
+    exit(1)  # Exit program if connection fails
+    
 # Defines cooking difficulty    
 def calc_difficulty(cooking_time, num_ingredients): 
     if cooking_time < 10 and num_ingredients < 4:
@@ -264,29 +288,6 @@ def main_menu(conn, cursor):
             return  # Ensures function exits properly
         else:
             print("Invalid choice. Please enter one of the following numbers: 1, 2, 3, 4, or 'quit'.")    
-
-import os
-import mysql.connector
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
-
-# Get database credentials securely
-DB_HOST = os.getenv("DB_HOST")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_NAME = os.getenv("DB_NAME")
-
-# Establish database connection
-conn = mysql.connector.connect(
-    host=DB_HOST,
-    user=DB_USER,
-    passwd=DB_PASSWORD,
-    database=DB_NAME
-)
-
-cursor = conn.cursor()
 
 # Start the menu
 main_menu(conn, cursor)

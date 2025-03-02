@@ -1,40 +1,74 @@
+# Imports SQLAlchemy packages and modules needed for code to run
 import os
-import mysql.connector
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Loads secrets from .env file
 load_dotenv()
 
-# Securely retrieve database credentials
+# Gets database credentials
 DB_HOST = os.getenv("DB_HOST")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
 
-# Establish database connection
-try:
-    conn = mysql.connector.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        passwd=DB_PASSWORD,
-        database=DB_NAME
-    )
-    cursor = conn.cursor()
-except mysql.connector.Error as err:
-    print(f"Error: {err}")
-    exit(1)  # Exit program if connection fails
-    
-# Defines cooking difficulty    
-def calc_difficulty(cooking_time, num_ingredients): 
-    if cooking_time < 10 and num_ingredients < 4:
-        return "Easy"
-    elif cooking_time < 10 and num_ingredients >= 4:
-        return "Medium"
-    elif cooking_time >= 10 and num_ingredients < 4:
-        return "Intermediate"
-    else:
-        return "Hard"
-    
+# Create SQLAlchemy engine using MySQL Connector/Python
+engine = create_engine(f"mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}")
+
+# Create session class
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# Defines declarative base
+Base = declarative_base()
+print("Database connection successful!")
+
+# Defines Recipe model
+class Recipe(Base):
+    __tablename__ = "final_recipes"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(50), nullable=False)
+    ingredients = Column(String(255), nullable=False)
+    cooking_time = Column(Integer, nullable=False)
+    difficulty = Column(String(20), nullable=False)
+
+    def __repr__(self):
+        return f"<Recipe ID: {self.id} - {self.name} ({self.difficulty})>"
+
+    def __str__(self):
+        return (
+            f"Recipe ID: {self.id}\n"
+            f"Name: {self.name}\n"
+            f"Ingredients: {', '.join(self.return_ingredients_as_list())}\n"
+            f"Cooking Time: {self.cooking_time} minutes\n"
+            f"Difficulty: {self.difficulty}\n"
+            f"{'-'*40}"
+        )
+
+    def calc_difficulty(self):
+        """Calculates and sets the difficulty of the recipe."""
+        num_ingredients = len(self.return_ingredients_as_list())
+        if self.cooking_time < 10 and num_ingredients < 4:
+            self.difficulty = "Easy"
+        elif self.cooking_time < 10 and num_ingredients >= 4:
+            self.difficulty = "Medium"
+        elif self.cooking_time >= 10 and num_ingredients < 4:
+            self.difficulty = "Intermediate"
+        else:
+            self.difficulty = "Hard"
+
+    def return_ingredients_as_list(self):
+        """Returns ingredients as a list, splitting by ', ' if necessary."""
+        if not self.ingredients:
+            return []
+        return self.ingredients.split(", ")
+
+# Create all defined tables in the database
+Base.metadata.create_all(engine)
+
 # Define create recipe
 def create_recipe(conn, cursor):
     name = input("\nEnter recipe name: ").strip()

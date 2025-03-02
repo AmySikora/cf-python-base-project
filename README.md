@@ -26,8 +26,8 @@ This project is designed to build **Python scripting and database management ski
 ## **🔧 Installation & Setup**
 ### **1️⃣ Clone the Repository**
 ```sh
-git clone https://github.com/yourusername/recipe-app-cli.git
-cd recipe-app-cli
+git clone https://github.com/AmySikora/cf-python-base-project
+cd cf-python-base-project
 ```
 
 ### **2️⃣ Install Dependencies**
@@ -84,12 +84,8 @@ Type 'quit' to exit.
 ---
 
 ## **🌟 Future Enhancements**
-🚀 **Convert to a web app with Django**  
-🚀 **User authentication for personal recipe management**  
-🚀 **More filtering options (by cooking time, difficulty, etc.)**  
+**Convert to a web app with Django**  
+**User authentication for personal recipe management**  
+**More filtering options (by cooking time, difficulty, etc.)**  
 
----
-
-## **📄 License**
-This project is open-source—feel free to modify and improve it!
-
+--

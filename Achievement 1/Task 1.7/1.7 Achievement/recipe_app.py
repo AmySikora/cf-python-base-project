@@ -17,7 +17,7 @@ DB_NAME = os.getenv("DB_NAME")
 # Create SQLAlchemy engine using MySQL Connector/Python
 engine = create_engine(f"mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}")
 
-# Create session class
+# Create session class to work with the database
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -25,7 +25,7 @@ session = Session()
 Base = declarative_base()
 print("Database connection successful!")
 
-# Defines Recipe model
+# Defines Recipe model table structure
 class Recipe(Base):
     __tablename__ = "final_recipes"
     
@@ -36,9 +36,11 @@ class Recipe(Base):
     cooking_time = Column(Integer, nullable=False)
     difficulty = Column(String(20), nullable=False)
 
+    # Defines how the object is diplayed
     def __repr__(self):
         return f"<Recipe ID: {self.id} - {self.name} ({self.difficulty})>"
 
+    # Defines how the recipe will display when printed
     def __str__(self):
         return (
             f"{'-'*40}\n"
@@ -47,7 +49,7 @@ class Recipe(Base):
             f"{'-'*40}"
         )
 
-    # Calculates the difficulty level of the recipe
+    # Calculates the difficulty level of the recipe based on cooling time and number of ingresdients
     def calc_difficulty(self):
         num_ingredients = len(self.return_ingredients_as_list())
         if self.cooking_time < 10 and num_ingredients < 4:
@@ -76,7 +78,7 @@ def create_recipe():
             print("Recipe name is too long. It must contain less than 50 characters. Please enter a shorter name.")
         else:
             break    
-    # Validate cooking time input
+    # Get cooking time and validate it as a number
     while True: 
         try:
             cooking_time = int(input("Enter cooking time in minutes: "))
@@ -84,7 +86,7 @@ def create_recipe():
         except ValueError:
             print("Only numerical values can be entered. Please enter a number.")
 
-    # Get ingredients
+    # Get ingredients and validate user entries
     ingredients = []
     while True:
         try:
@@ -103,8 +105,10 @@ def create_recipe():
         else:
             print(f"{ingredient} is already on the list.")
 
+    # Converts ingredient list to a string for storage
     ingredients_str = ", ".join(ingredients)
 
+    # Creates and saves new recipe
     recipe = Recipe(name=name, ingredients=ingredients_str, cooking_time=cooking_time)
     recipe.calc_difficulty()
 
@@ -123,22 +127,28 @@ def view_all_recipes():
 
 # Function 3: search_by_ingredients
 def search_by_ingredients():
+    # CHeck to see if receipes are in the database
     if session.query(Recipe).count() == 0:
         print("\nNo recipes found in the database.")
         return
 
+    # Gets all ingredients from database
     results = session.query(Recipe.ingredients).all()
     all_ingredients = set()
 
+    # Loop for all recipe ingredients entered
     for row in results:
         all_ingredients.update(row[0].split(", "))
 
+    # Coverts to a sorted list to be displayed
     all_ingredients = sorted(all_ingredients)
 
+    # Displays available ingredients to user
     print("\nAvailable Ingredients:")
     for index, ingredient in enumerate(all_ingredients):
         print(f"{index}. {ingredient}")
 
+    # Asks user to enter a number to select an ingredient
     while True:
         try:
             num = int(input("\nEnter the number of the ingredient to search for: "))
@@ -150,8 +160,10 @@ def search_by_ingredients():
         except ValueError:
             print("Only numbers are allowed. Please try again.")
 
+    # Searches the database for recipes with the chose ingredient
     found_recipes = session.query(Recipe).filter(Recipe.ingredients.like(f"%{ingredient_searched}%")).all()
 
+    # Displays found recipes or that none match
     if found_recipes:
         print(f"\n{len(found_recipes)} Recipe(s) found with {ingredient_searched}:")
         for recipe in found_recipes:
@@ -303,4 +315,5 @@ def main_menu():
         else:
             print("Invalid choice.")
 
+# Starts the app
 main_menu()

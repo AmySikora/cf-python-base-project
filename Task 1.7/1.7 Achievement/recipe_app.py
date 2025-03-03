@@ -165,7 +165,7 @@ def edit_recipe():
     recipes = session.query(Recipe.id, Recipe.name).all()
     if not recipes:
         print("\nNo recipes found.")
-        return
+        return  # Exit function if no recipes exist
 
     print("\nAvailable Recipes:")
     for recipe_id, name in recipes:
@@ -202,89 +202,16 @@ def edit_recipe():
                 else:
                     recipe.name = new_name  # Valid name entered, update it
                     break
-            break  # Exit loop after successful update
 
         elif choice == "2":  # Updating cooking time
-            while True:  # Keep asking until user enters a valid number
+            while True:
                 try:
                     new_cooking_time = int(input("Enter new cooking time (in minutes): "))  
                     recipe.cooking_time = new_cooking_time
                     recipe.calc_difficulty()  # Update difficulty level
-                    break  # Exit loop if input is valid
-                except ValueError:
-                    print("Invalid input. Cooking time must be a number. Please try again.")
-            break  # Exit loop after successful update
-
-        elif choice == "3":  # Updating ingredients
-            while True:
-                new_ingredients = input("Enter new ingredients (comma-separated): ").strip().lower()
-                if len(new_ingredients) == 0:
-                    print("Ingredients list cannot be empty. Please enter at least one ingredient.")
-                else:
-                    recipe.ingredients = new_ingredients
-                    recipe.calc_difficulty()  # Recalculate difficulty
-                    break  # Exit loop
-            break  # Exit loop after successful update
-
-        else:
-            print("Invalid choice. Please enter 1, 2, or 3.")
-
-    session.commit()
-    print("\nRecipe updated successfully!")
-
-    # Fetch all recipes
-    recipes = session.query(Recipe.id, Recipe.name).all()
-    if not recipes:
-        print("\nNo recipes found.")
-        return
-
-    print("\nAvailable Recipes:")
-    for recipe_id, name in recipes:
-        print(f"ID: {recipe_id} - Name: {name}")
-
-    # Keep asking until user enters a valid recipe ID
-    while True:
-        try:
-            recipe_id = int(input("\nEnter the ID of the recipe to update: "))
-            recipe = session.query(Recipe).filter_by(id=recipe_id).first()
-            if recipe:
-                break  # Valid ID, exit loop
-            else:
-                print("Recipe ID not found. Please enter a valid recipe ID.")
-        except ValueError:
-            print("Invalid input. Please enter a valid numeric recipe ID.")
-
-    # Keep asking until user enters a valid menu choice
-    while True:
-        print("\nWhat would you like to update?")
-        print("1 - Name")
-        print("2 - Cooking Time")
-        print("3 - Ingredients")
-
-        choice = input("Enter your choice (1/2/3): ").strip()
-
-        if choice == "1":  # Updating the name
-            while True:
-                new_name = input("Enter new name: ").strip()
-                if len(new_name) == 0:
-                    print("Recipe name cannot be empty. Please enter a valid name.")
-                elif len(new_name) > 50:
-                    print("Recipe name is too long (max 50 characters). Please try again.")
-                else:
-                    recipe.name = new_name  # Valid name entered, update it
                     break
-            break  # Exit loop after successful update
-
-        elif choice == "2":  # Updating cooking time
-            while True:  # Keep asking until user enters a valid number
-                try:
-                    new_cooking_time = int(input("Enter new cooking time (in minutes): "))  
-                    recipe.cooking_time = new_cooking_time
-                    recipe.calc_difficulty()  # Update difficulty level
-                    break  # Exit loop if input is valid
                 except ValueError:
                     print("Invalid input. Cooking time must be a number. Please try again.")
-            break  # Exit loop after successful update
 
         elif choice == "3":  # Updating ingredients
             while True:
@@ -294,82 +221,18 @@ def edit_recipe():
                 else:
                     recipe.ingredients = new_ingredients
                     recipe.calc_difficulty()  # Recalculate difficulty
-                    break  # Exit loop
-            break  # Exit loop after successful update
+                    break
 
         else:
             print("Invalid choice. Please enter 1, 2, or 3.")
+            continue  # Keeps looping if the input is invalid
+
+        break  # Exit choice loop after a valid selection
 
     session.commit()
-    print("\nRecipe updated successfully!")
+    print("\n✅ Recipe updated successfully! Returning to main menu...\n")
 
-    # Fetch all recipes
-    recipes = session.query(Recipe.id, Recipe.name).all()
-    if not recipes:
-        print("\nNo recipes found.")
-        return
-
-    print("\nAvailable Recipes:")
-    for recipe_id, name in recipes:
-        print(f"ID: {recipe_id} - Name: {name}")
-
-    # Keep asking until user enters a valid recipe ID
-    while True:
-        try:
-            recipe_id = int(input("\nEnter the ID of the recipe to update: "))
-            recipe = session.query(Recipe).filter_by(id=recipe_id).first()
-            if recipe:
-                break  # Valid ID, exit loop
-            else:
-                print("Recipe ID not found. Please enter a valid recipe ID.")
-        except ValueError:
-            print("Invalid input. Please enter a valid numeric recipe ID.")
-
-    print("\nWhat would you like to update?")
-    print("1 - Name")
-    print("2 - Cooking Time")
-    print("3 - Ingredients")
-
-    choice = input("Enter your choice (1/2/3): ").strip()
-
-    if choice == "1":  # Updating the name
-        while True:
-            new_name = input("Enter new name: ").strip()
-            if len(new_name) == 0:
-                print("Recipe name cannot be empty. Please enter a valid name.")
-            elif len(new_name) > 50:
-                print("Recipe name is too long (max 50 characters). Please try again.")
-            else:
-                recipe.name = new_name  # Valid name entered, update it
-                break
-
-    elif choice == "2":  # Updating cooking time
-        while True:  # Keep asking until user enters a valid number
-            try:
-                new_cooking_time = int(input("Enter new cooking time (in minutes): "))  
-                recipe.cooking_time = new_cooking_time
-                recipe.calc_difficulty()  # Update difficulty level
-                break  # Exit loop if input is valid
-            except ValueError:
-                print("Invalid input. Cooking time must be a number. Please try again.")
-
-    elif choice == "3":  # Updating ingredients
-        while True:
-            new_ingredients = input("Enter new ingredients (comma-separated): ").strip().lower()
-            if len(new_ingredients) == 0:
-                print("Ingredients list cannot be empty. Please enter at least one ingredient.")
-            else:
-                recipe.ingredients = new_ingredients
-                recipe.calc_difficulty()  # Recalculate difficulty
-                break  # Exit loop
-
-    else:
-        print("Invalid choice.")
-        return
-
-    session.commit()
-    print("\nRecipe updated successfully!")
-
+          
 # Function 5: delete_recipe
 def delete_recipe():
     recipes = session.query(Recipe.id, Recipe.name).all()

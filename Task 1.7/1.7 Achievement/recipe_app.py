@@ -171,15 +171,17 @@ def edit_recipe():
     for recipe_id, name in recipes:
         print(f"ID: {recipe_id} - Name: {name}")
 
-    try:
-        recipe_id = int(input("\nEnter the ID of the recipe to update: "))
-        recipe = session.query(Recipe).filter_by(id=recipe_id).first()
-        if not recipe:
-            print("Recipe ID not found.")
-            return
-    except ValueError:
-        print("Invalid input. Please enter a valid recipe ID.")
-        return
+    # Keep asking until user enters a valid recipe ID
+    while True:
+        try:
+            recipe_id = int(input("\nEnter the ID of the recipe to update: "))
+            recipe = session.query(Recipe).filter_by(id=recipe_id).first()
+            if recipe:
+                break  # Valid ID, exit loop
+            else:
+                print("Recipe ID not found. Please enter a valid recipe ID.")
+        except ValueError:
+            print("Invalid input. Please enter a valid numeric recipe ID.")
 
     print("\nWhat would you like to update?")
     print("1 - Name")

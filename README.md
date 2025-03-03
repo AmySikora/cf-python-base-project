@@ -5,7 +5,7 @@ This project is designed to build **Python scripting and database management ski
 
 ---
 
-## **🛠 Technologies Used**
+## ** Technologies Used**
 - **Python 3.6+** (program logic)
 - **SQLAlchemy** (database ORM)
 - **MySQL** (storage for recipes)
@@ -13,29 +13,29 @@ This project is designed to build **Python scripting and database management ski
 
 ---
 
-## **🚀 Features**
-✔ **Add, update, delete, and search for recipes**  
-✔ **Store recipes in a MySQL database**  
-✔ **Find recipes using ingredient-based search**  
-✔ **Automatically calculate difficulty** based on ingredients and cooking time  
-✔ **Handles errors gracefully** (invalid inputs, missing data, etc.)  
-✔ **User-friendly menu navigation**  
+## ** Features**
+ **Add, update, delete, and search for recipes**  
+**Store recipes in a MySQL database**  
+**Find recipes using ingredient-based search**  
+**Automatically calculate difficulty** based on ingredients and cooking time  
+**Handles errors gracefully** (invalid inputs, missing data, etc.)  
+**User-friendly menu navigation**  
 
 ---
 
-## **🔧 Installation & Setup**
-### **1️⃣ Clone the Repository**
+## **Installation & Setup**
+### **Clone the Repository**
 ```sh
 git clone https://github.com/AmySikora/cf-python-base-project
 cd cf-python-base-project
 ```
 
-### **2️⃣ Install Dependencies**
+### ** Install Dependencies**
 ```sh
 pip install -r requirements.txt
 ```
 
-### **3️⃣ Set Up Environment Variables**
+### **Set Up Environment Variables**
 Create a `.env` file in the project directory and add:
 ```
 DB_HOST=your_database_host
@@ -44,14 +44,14 @@ DB_PASSWORD=your_mysql_password
 DB_NAME=your_database_name
 ```
 
-### **4️⃣ Run the Application**
+### **Run the Application**
 ```sh
 python recipe_app.py
 ```
 
 ---
 
-## **📈 How to Use**
+## ** How to Use**
 ### **Main Menu**
 ```
 1. Add a new recipe
@@ -75,15 +75,15 @@ Type 'quit' to exit.
 
 ---
 
-## **🛠 Error Handling**
-✔ **Prevents duplicate ingredients**  
-✔ **Ensures valid numerical inputs**  
+## ** Error Handling**
+**Prevents duplicate ingredients**  
+**Ensures valid numerical inputs**  
 ✔ **Handles database connection errors** gracefully  
 ✔ **Guides the user through interactions with clear prompts**  
 
 ---
 
-## **🌟 Future Enhancements**
+## ** Future Enhancements**
 **Convert to a web app with Django**  
 **User authentication for personal recipe management**  
 **More filtering options (by cooking time, difficulty, etc.)**  

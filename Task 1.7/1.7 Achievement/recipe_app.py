@@ -28,28 +28,29 @@ print("Database connection successful!")
 # Defines Recipe model
 class Recipe(Base):
     __tablename__ = "final_recipes"
-
+    
+    # Defines the columns 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False)
     ingredients = Column(String(255), nullable=False)
     cooking_time = Column(Integer, nullable=False)
     difficulty = Column(String(20), nullable=False)
 
+    # Defines the __repr__ representation method
     def __repr__(self):
         return f"<Recipe ID: {self.id} - {self.name} ({self.difficulty})>"
 
+    # Defines the __str__ string method to print the recipe
     def __str__(self):
-        return (
-            f"Recipe ID: {self.id}\n"
-            f"Name: {self.name}\n"
-            f"Ingredients: {', '.join(self.return_ingredients_as_list())}\n"
-            f"Cooking Time: {self.cooking_time} minutes\n"
-            f"Difficulty: {self.difficulty}\n"
-            f"{'-'*40}"
-        )
+        print("-" * 20, end="\n") 
+        print(f"Recipe ID: {self.id}", end=" | ")
+        print(f"Name: {self.name}", end=" | ")
+        print(f"Cooking Time: {self.cooking_time} minutes", end=" | ")
+        print(f"Difficulty: {self.difficulty}", end="\n")
+        print("-" * 20, end="\n")
 
+    # Calculates the difficulty level of the recipe
     def calc_difficulty(self):
-        """Calculates and sets the difficulty of the recipe."""
         num_ingredients = len(self.return_ingredients_as_list())
         if self.cooking_time < 10 and num_ingredients < 4:
             self.difficulty = "Easy"
@@ -60,8 +61,8 @@ class Recipe(Base):
         else:
             self.difficulty = "Hard"
 
+    # Defines the list of ingredients
     def return_ingredients_as_list(self):
-        """Returns ingredients as a list, splitting by ', ' if necessary."""
         if not self.ingredients:
             return []
         return self.ingredients.split(", ")
@@ -69,8 +70,8 @@ class Recipe(Base):
 # Create all defined tables in the database
 Base.metadata.create_all(engine)
 
-# Define create recipe
-def create_recipe(conn, cursor):
+# Function 1: create_recipe
+def create_recipe():
     name = input("\nEnter recipe name: ").strip()
     
     # Verify cooking time input is a number
@@ -85,209 +86,194 @@ def create_recipe(conn, cursor):
     ingredients = []
     while True:
         try:
-            n = int(input("Enter the number of ingredients: "))
-            if n > 0:
+            num_ingredients = int(input("Enter the number of ingredients: "))
+            if num_ingredients > 0:
                 break
             else:
                 print("Please enter a positive number.")
         except ValueError:
             print("Please enter a valid number.")   
 
-    for _ in range(n):
+    for _ in range(num_ingredients):
         ingredient = input("Enter an ingredient: ").strip().lower()
         if ingredient not in ingredients:
             ingredients.append(ingredient)
         else:
-            print(ingredient + " is already in the list. Skipping duplicate.")
+            print(f"{ingredient} is already on the list.")
 
     # Convert ingredients list to a comma-separated string
     ingredients_str = ", ".join(ingredients)
 
-    # Calculate cooking difficulty 
-    difficulty = calc_difficulty(cooking_time, len(ingredients))
+    # Creates and savea a recipe
+    recipe= Recipe(name=name, ingredients=ingredients_str, cooking_time=cooking_time)
+    recipe.calc_difficulty()
 
-    # SQL Query to Insert Data into the Recipes Table
-    query = '''INSERT INTO recipes (name, ingredients, cooking_time, difficulty) 
-               VALUES (%s, %s, %s, %s)'''
-    
-    values = (name, ingredients_str, cooking_time, difficulty)
-
-    # Execute query
-    cursor.execute(query, values)
-    conn.commit()  # Save changes to the database
+    # Session add and commit recipe
+    session.add(recipe)
+    session.commit()  # Saves the changes 
 
     print("\nRecipe added successfully!")
 
-# Defines search for recipe ingredient
-def search_recipe(conn, cursor):
-    # Search database for ingredients
-    cursor.execute("SELECT ingredients FROM recipes")
-    results = cursor.fetchall() # Fetch data in rows
+#  Function 2: view_all_recipes
+def view_all_recipes():
+    # Retrieves as all recipes in the database
+    recipes = session.query(Recipe).all()
+
+    # Checks if recipes exist 
+    if not recipes:
+        print("\nNo recipes found in the database")
+        return None
     
-    # Creating a list for ingredients
+    # If recipies found, prints all recipes
+    for recipe in recipes:
+        print(recipe)
+
+# Function #3 search_by_ingredients()
+def search_recipe():
+    # Cheks to see if there are recipes in the database
+    if session.query(Recipe).count() == 0:
+        print("\nNo recipes were found in the database.")
+        return None
+
+    # Searches the database for ingredients
+    results = session.query(Recipe.ingredients).all()
     all_ingredients = set()
 
     # Process results
     for row in results:
-        ingredients_list = row[0].split(", ") # Convert string back to list
-        all_ingredients.update(ingredients_list) # Add ingredients
+        all_ingredients.update(row[0].split(", ")) # Converts string back to list
+
+    all_ingredients = sorted(all_ingredients) # Add ingredients
 
     # Sort list of ingredients
     all_ingredients = sorted(list(all_ingredients))
 
-    # Showsingredients
+    # Shows the ingredients
     print("\nAvailable Ingredients:")
     for index, ingredient in enumerate(all_ingredients):
-        print(str(index) + ". " + ingredient)
+        print(f"{index}. {ingredient}")
 
-    # Ask user to select an ingredient
+    # Asks the user to select an ingredient
     while True:
         try:
             num = int(input("\nEnter the number of the ingredient to search for: "))
             if 0 <= num < len(all_ingredients):
-                ingredient_searched = all_ingredients[num]  # Correct variable name
+                ingredient_searched = all_ingredients[num]  
                 break
             else:
                 print("Invalid choice. Please enter a valid number from the list.")
         except ValueError:
             print("Only numbers are allowed. Please try again.")
 
-    # Search database for recipes with the ingredient
-    query = "SELECT name, ingredients, cooking_time, difficulty FROM recipes WHERE ingredients LIKE %s"
-    cursor.execute(query, ('%' + ingredient_searched + '%',))
-    recipes_found = cursor.fetchall()  # Get all recipe matches
+    # Search database for recipes that match the chosen ingredient
+    found_recipes = session.query(Recipe).filter(Recipe.ingredients.like(f"%{ingredient_searched}%")).all()
 
-    # Show results
-    if recipes_found:
-        print("\n" + str(len(recipes_found)) + " Recipe(s) found with " + ingredient_searched + ":")
-        for recipe in recipes_found:
-            print("\n--------------------------------")
-            print("Name: " + recipe[0])
-            print("Ingredients: " + recipe[1])
-            print("Cooking Time: " + str(recipe[2]) + " minutes")
-            print("Difficulty: " + recipe[3])
-            print("--------------------------------")
+    # If recipes with the ingredient is found print recipe(s)
+    if found_recipes:
+        print(f"\n{len(found_recipes)} Recipe(s) found with {ingredient_searched}:")
+        for recipe in found_recipes:
+            print(recipe)
+    # If ingredient was not found notify user        
     else:
-        print("No recipes found with this ingredient.")
+        print("No recipes found with that ingredient.")
 
-# Define update recipe function
-def update_recipe(conn, cursor):
+# Function #4 edit_recipe
+def edit_recipe():
     # Fetch all recipes
-    cursor.execute("SELECT id, name FROM recipes")
-    all_recipes = cursor.fetchall()  # Fetch data as tuples
+    recipes = session.query(Recipe.id, Recipe.name).all()
     
-    if not all_recipes:
+    # Searched for recipes to edit
+    if not recipes:
         print("\nNo recipes found in the database.")
         return  # No recipes found, exit function
 
-    # Display the available recipes with their IDs
+    # Displays the available recipes with their IDs and names
     print("\nAvailable Recipes:")
-    for recipe in all_recipes:
-        print("ID:", recipe[0], "- Name:", recipe[1])
+    for recipe_id, name in recipes:
+        print(f"ID: {recipe_id} - Name: {name}")
 
     # Ask user to select a recipe by ID
-    while True:
         try:
             recipe_id = int(input("\nEnter the ID number of the recipe you would like to update: "))
-            cursor.execute("SELECT * FROM recipes WHERE id = %s", (recipe_id,))
-            selected_recipe = cursor.fetchone()
-            if selected_recipe:
-                break
-            else:
-                print("Recipe ID", recipe_id, "does not exist. Please try again.")
+            recipe = session.query(Recipe).filter_by(id=recipe_id).first()
+            if not recipe:
+                print("The recipe was not found.")
+                return
         except ValueError:
             print("Only numbers are allowed. Please try again.")
+            return      
 
-    # Ask what to update
-    while True:
+    # Ask what the user would like to update
         print("\nWhat would you like to update?")
         print("1 - Name")
         print("2 - Cooking Time")
         print("3 - Ingredients")
+
         choice = input("Enter your choice (1/2/3): ").strip()
         if choice in ['1', '2', '3']:
             break
         print("Invalid choice. Please enter 1, 2, or 3.")
 
-    # Update based on choice 
+    # Updates based on users choice 
     if choice == '1':  # Updates name
-        new_name = input("Enter the new name of the recipe: ").strip()
-        cursor.execute("UPDATE recipes SET name = %s WHERE id = %s", (new_name, recipe_id))
-
+        recipe.name = input("Enter the new name of the recipe: ").strip()
     elif choice == '2':  # Updates cooking time
-        while True:
             try:
-                new_cooking_time = int(input("Enter new cooking time (in minutes): "))  
-                break
+                recipe.cooking_time = int(input("Enter new cooking time (in minutes): ")) 
+                # Updates the reciecipe's difficulty level
+                recipe.calc_difficulty() 
             except ValueError:
                 print("Invalid input. Please enter a number.")
-
-        # Recalculate difficulty
-        cursor.execute("SELECT ingredients FROM recipes WHERE id = %s", (recipe_id,))
-        ingredients_str = cursor.fetchone()[0]
-        num_ingredients = len(ingredients_str.split(", "))
-        new_difficulty = calc_difficulty(new_cooking_time, num_ingredients)
-
-        cursor.execute("UPDATE recipes SET cooking_time = %s, difficulty = %s WHERE id = %s",
-                       (new_cooking_time, new_difficulty, recipe_id))
-    
+                return
     elif choice == '3':  # Updates ingredients
         new_ingredients = input("Enter new ingredients (separated by commas): ").strip().lower()
-
-        # Recalculate difficulty
-        num_ingredients = len(new_ingredients.split(", "))
-        cursor.execute("SELECT cooking_time FROM recipes WHERE id = %s", (recipe_id,))
-        cooking_time = cursor.fetchone()[0]
-        new_difficulty = calc_difficulty(cooking_time, num_ingredients)
-
-        cursor.execute("UPDATE recipes SET ingredients = %s, difficulty = %s WHERE id = %s",
-                       (new_ingredients, new_difficulty, recipe_id))
+        recipe.ingredients = new_ingredients
+        # Recalculates recipe difficulty
+        recipe.cal_diffuctly()
+    else:
+        print("Invalid choice") 
+        return   
     
     # Commit the changes
-    conn.commit()
-    print("\nRecipe ID", recipe_id, "was successfully updated!")
+    session.commit()
+    print("\nRecipe was successfully updated!")
 
-
-
-# Define delete recipe function
-def delete_recipe(conn, cursor):
+# Function 5: delete_recipe 
+def delete_recipe():
     # Fetch all recipes
-    cursor.execute("SELECT id, name FROM recipes")
-    all_recipes = cursor.fetchall()  # Fetch data as tuples
+    recipes = session.query(Recipe.id, Recipe.name).all()  # searches for all recipes by ID and name
 
-    if not all_recipes:
+    if not recipes:
         print("\nNo recipes found in the database.")
         return  # No recipes found, exit function
 
     # Display the available recipes with their IDs
     print("\nAvailable Recipes:")
-    for recipe in all_recipes:
-        print("ID:", recipe[0], "- Name:", recipe[1])
+    for recipe_id, name in recipes:
+        print(f"ID: {recipe_id} - Name: {name}")
 
     # Ask user to select a recipe by ID
-    while True:
         try:
             recipe_id = int(input("\nEnter the ID number of the recipe you would like to delete: "))
-            cursor.execute("SELECT * FROM recipes WHERE id = %s", (recipe_id,))
-            selected_recipe = cursor.fetchone()
-            if selected_recipe:
-                break
+            recipe = session.query(Recipe).filter_by(id=recipe_id).first()
+            if not recipe:
+                print("The recipe ID was not found.")
+                return
         except ValueError:
-            pass  # Invalid input, continue loop
+            print("Invlaid input.") # Invalid input, continue loop
 
      # Confirm deletion
-    print("\nAre you sure you want to delete this recipe? (yes/no)")
-    confirm = input().strip().lower()
+    confirm = input("\nAre you sure you want to delete this recipe? (yes/no): ").strip().lower()
     if confirm != 'yes':
         print("\nRecipe deletion canceled.")
         return  # Cancel deletion
 
     # Delete recipe
-    cursor.execute("DELETE FROM recipes WHERE id = %s", (recipe_id,))
-    conn.commit()  # Save changes
+    session.delete(recipe)
+    session.commit()
 
     # Print confirmation message after successful deletion
-    print("\nRecipe ID", recipe_id, "was successfully deleted!")
+    print("\nRecipe was successfully deleted!")
 
 # This is the loop running in the main menu
 # Loop continues as long as user doesn't quit

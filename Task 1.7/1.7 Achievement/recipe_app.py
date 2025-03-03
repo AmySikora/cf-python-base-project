@@ -178,7 +178,7 @@ def edit_recipe():
             print("Recipe ID not found.")
             return
     except ValueError:
-        print("Invalid input.")
+        print("Invalid input. Please enter a valid recipe ID.")
         return
 
     print("\nWhat would you like to update?")
@@ -188,7 +188,7 @@ def edit_recipe():
 
     choice = input("Enter your choice (1/2/3): ").strip()
 
-    if choice == "1":  # Updating the name s
+    if choice == "1":  # Updating the name
         while True:
             new_name = input("Enter new name: ").strip()
             if len(new_name) == 0:
@@ -200,20 +200,24 @@ def edit_recipe():
                 break
 
     elif choice == "2":  # Updating cooking time
-        try:
-            recipe.cooking_time = int(input("Enter new cooking time (in minutes): "))  
-            recipe.calc_difficulty()  # Update difficulty level
-        except ValueError:
-            print("Invalid input. Cooking time must be a number.")
-            return
+        while True:  # Keep asking until user enters a valid number
+            try:
+                new_cooking_time = int(input("Enter new cooking time (in minutes): "))  
+                recipe.cooking_time = new_cooking_time
+                recipe.calc_difficulty()  # Update difficulty level
+                break  # Exit loop if input is valid
+            except ValueError:
+                print("Invalid input. Cooking time must be a number. Please try again.")
 
     elif choice == "3":  # Updating ingredients
-        new_ingredients = input("Enter new ingredients (comma-separated): ").strip().lower()
-        if len(new_ingredients) == 0:
-            print("Ingredients list cannot be empty.")
-            return
-        recipe.ingredients = new_ingredients
-        recipe.calc_difficulty()  # Recalculate difficulty
+        while True:
+            new_ingredients = input("Enter new ingredients (comma-separated): ").strip().lower()
+            if len(new_ingredients) == 0:
+                print("Ingredients list cannot be empty. Please enter at least one ingredient.")
+            else:
+                recipe.ingredients = new_ingredients
+                recipe.calc_difficulty()  # Recalculate difficulty
+                break  # Exit loop
 
     else:
         print("Invalid choice.")

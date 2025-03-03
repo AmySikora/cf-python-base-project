@@ -129,7 +129,7 @@ def view_all_recipes():
         print(recipe)
 
 # Function #3 search_by_ingredients()
-def search_recipe():
+def search_by_ingredients():
     # Cheks to see if there are recipes in the database
     if session.query(Recipe).count() == 0:
         print("\nNo recipes were found in the database.")
@@ -143,10 +143,8 @@ def search_recipe():
     for row in results:
         all_ingredients.update(row[0].split(", ")) # Converts string back to list
 
-    all_ingredients = sorted(all_ingredients) # Add ingredients
-
     # Sort list of ingredients
-    all_ingredients = sorted(list(all_ingredients))
+    all_ingredients = sorted(all_ingredients) # Add ingredients
 
     # Shows the ingredients
     print("\nAvailable Ingredients:")
@@ -277,10 +275,9 @@ def delete_recipe():
 
 # This is the loop running in the main menu
 # Loop continues as long as user doesn't quit
-def main_menu(conn, cursor):
-    choice = ""  # Define choice before loop starts
+def main_menu():
 
-    while choice != 'quit':  # Keep running until user quits
+    while True:
         print("\nMain Menu")
         print("=====================================")
         print("What would you like to do? Pick a choice!")
@@ -293,21 +290,22 @@ def main_menu(conn, cursor):
         choice = input("Your choice: ").strip().lower()  # Remove spaces & make lowercase
 
         if choice == '1':
-            create_recipe(conn, cursor)
-        elif choice == '2':
-            search_recipe(conn, cursor)
+            create_recipe()
+        elif choice == "2":
+            view_all_recipes()
         elif choice == '3':
-            update_recipe(conn, cursor)
+            search_by_ingredients()
         elif choice == '4':
-            delete_recipe(conn, cursor)
+            edit_recipe()
+        elif choice == '5':
+            delete_recipe()
         elif choice == 'quit':
-            print("Closing recipes and saving changes...")   
-            conn.commit()  # Save changes to database
-            cursor.close()
-            conn.close()
-            return  # Ensures function exits properly
+            print("Closing recipes application and saving changes...")   
+            session.close()
+            engine.dispose() # Closes the engine connection
+            break  # Exits loop
         else:
-            print("Invalid choice. Please enter one of the following numbers: 1, 2, 3, 4, or 'quit'.")    
+            print("Invalid choice. Please enter a number between 1 and 5 or type 'quit'.")    
 
 # Start the menu
-main_menu(conn, cursor)
+main_menu()

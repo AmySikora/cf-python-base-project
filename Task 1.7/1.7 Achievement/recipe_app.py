@@ -161,6 +161,7 @@ def search_by_ingredients():
 
 # Function 4: edit_recipe
 def edit_recipe():
+    # Fetch all recipes
     recipes = session.query(Recipe.id, Recipe.name).all()
     if not recipes:
         print("\nNo recipes found.")
@@ -187,19 +188,33 @@ def edit_recipe():
 
     choice = input("Enter your choice (1/2/3): ").strip()
 
-    if choice == "1":
-        recipe.name = input("Enter new name: ").strip()
-    elif choice == "2":
+    if choice == "1":  # Updating the name s
+        while True:
+            new_name = input("Enter new name: ").strip()
+            if len(new_name) == 0:
+                print("Recipe name cannot be empty. Please enter a valid name.")
+            elif len(new_name) > 50:
+                print("Recipe name is too long (max 50 characters). Please try again.")
+            else:
+                recipe.name = new_name  # Valid name entered, update it
+                break
+
+    elif choice == "2":  # Updating cooking time
         try:
             recipe.cooking_time = int(input("Enter new cooking time (in minutes): "))  
-            recipe.calc_difficulty()
+            recipe.calc_difficulty()  # Update difficulty level
         except ValueError:
-            print("Invalid input.")
+            print("Invalid input. Cooking time must be a number.")
             return
-    elif choice == "3":
+
+    elif choice == "3":  # Updating ingredients
         new_ingredients = input("Enter new ingredients (comma-separated): ").strip().lower()
+        if len(new_ingredients) == 0:
+            print("Ingredients list cannot be empty.")
+            return
         recipe.ingredients = new_ingredients
-        recipe.calc_difficulty()
+        recipe.calc_difficulty()  # Recalculate difficulty
+
     else:
         print("Invalid choice.")
         return

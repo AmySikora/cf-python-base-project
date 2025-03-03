@@ -68,8 +68,14 @@ Base.metadata.create_all(engine)
 
 # Function 1: create_recipe
 def create_recipe():
-    name = input("\nEnter recipe name: ").strip()
-    
+    while True:
+        name = input("\nEnter recipe name: ").strip()
+        if len(name) == 0:
+            print("Recipe name cannot be empty. Please enter a recipe name.")
+        elif len(name) > 50:
+            print("Recipe name is too long. It must contain less than 50 characters. Please enter a shorter name.")
+        else:
+            break    
     # Validate cooking time input
     while True: 
         try:

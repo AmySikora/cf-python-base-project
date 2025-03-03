@@ -230,38 +230,48 @@ def edit_recipe():
         break  # Exit choice loop after a valid selection
 
     session.commit()
-    print("\n✅ Recipe updated successfully! Returning to main menu...\n")
+    print("\nRecipe updated successfully! Returning to main menu...\n")
 
           
 # Function 5: delete_recipe
 def delete_recipe():
+    # Fetch all recipes
     recipes = session.query(Recipe.id, Recipe.name).all()
-    if not recipes:
-        print("\nNo recipes found.")
-        return
 
+    if not recipes:
+        print("\nNo recipes found in the database.")
+        return  # Exit function if no recipes exist
+
+    # Display available recipes
     print("\nAvailable Recipes:")
     for recipe_id, name in recipes:
         print(f"ID: {recipe_id} - Name: {name}")
 
-    try:
-        recipe_id = int(input("\nEnter the ID of the recipe to delete: "))
-        recipe = session.query(Recipe).filter_by(id=recipe_id).first()
-        if not recipe:
-            print("Recipe ID not found.")
-            return
-    except ValueError:
-        print("Invalid input.")
-        return
+    # Keep asking until a valid recipe ID is entered
+    while True:
+        try:
+            recipe_id = int(input("\nEnter the ID of the recipe to delete: "))
+            recipe = session.query(Recipe).filter_by(id=recipe_id).first()
+            if recipe:
+                break  # Valid recipe found, exit loop
+            else:
+                print("Recipe ID not found. Please enter a valid recipe ID.")
+        except ValueError:
+            print("Invalid input. Please enter a numeric recipe ID.")
 
-    confirm = input("\nAre you sure you want to delete this recipe? (yes/no): ").strip().lower()
-    if confirm != "yes":
-        print("\nRecipe deletion canceled.")
-        return
+    # Confirm deletion
+    confirm = input(f"\nAre you sure you want to delete '{recipe.name}'? (yes/no): ").strip().lower()
+    if confirm != 'yes':
+        print("\nRecipe deletion canceled. Returning to main menu...")
+        return  # Exit without deleting
 
+    # Delete recipe
     session.delete(recipe)
     session.commit()
-    print("\nRecipe deleted successfully!")
+
+    # Print confirmation message after successful deletion
+    print(f"\nRecipe '{recipe.name}' was successfully deleted! Returning to main menu...\n")
+
 
 # Main menu
 def main_menu():

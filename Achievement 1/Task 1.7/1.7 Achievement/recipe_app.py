@@ -76,20 +76,26 @@ def create_recipe():
     while True:
         name = input("\nEnter recipe name: ").strip()
         if not name:
+            logging.warning("User entered an empty recipe name.")
             print("The recipe name cannot be empty. Please add a name to your recipe.")
         elif len(name) > 50:
-            print("Recipe name is too long. It must contain less than 50 characters. Please enter a shorter name.")
+            logging.warning("User entered a recipe name that is too long.")
+            print("Recipe name must be under 50 characters. Please enter a shorter name.")
         else:
             break    
+
     # Get cooking time and validate it as a number
     while True: 
         try:
             cooking_time = int(input("Enter cooking time in minutes: "))
-            if cooking_time <= 0:
-                print("Cooking time must be a positive number. Please try again.")
-            break
+            if cooking_time > 0:
+                break
+            else:
+                logging.warning("User entered zero or negative cooking time.")
+                print("Cooking time must be greater than zero.")
         except ValueError:
-            print("Only numerical values can be entered. Please enter a number.")
+            logging.error("Invalid cooking time input.")
+            print("Only numbers are allowed. Please try again.")
 
     # Get ingredients and validate user entries
     ingredients = []
@@ -99,8 +105,10 @@ def create_recipe():
             if num_ingredients > 0:
                 break
             else:
+                logging.warning("User entered zero or negative number of ingredients.")
                 print("Please enter a positive number.")
         except ValueError:
+            logging.error("Invalid number of ingredients input.")
             print("Please enter a valid number.")   
 
     for _ in range(num_ingredients):
@@ -108,10 +116,13 @@ def create_recipe():
         if ingredient not in ingredients:
             ingredients.append(ingredient)
         else:
+            logging.info(f"User entered a duplicate ingredient: {ingredient}")
             print(f"{ingredient} is already on the list.")
 
     # Converts ingredient list to a string for storage
     ingredients_str = ", ".join(ingredients)
+    recipe = Recipe(name=name, ingredients=ingredients_str, cooking_time=cooking_time)
+    recipe.calculate_difficulty()
 
     # Creates and saves new recipe
     recipe = Recipe(name=name, ingredients=ingredients_str, cooking_time=cooking_time)
@@ -119,6 +130,7 @@ def create_recipe():
 
     session.add(recipe)
     session.commit()
+    logging.info("Recipe added successfully!")
     print("\nRecipe added successfully!")
 
 # Function 2: view_all_recipes
@@ -132,7 +144,7 @@ def view_all_recipes():
 
 # Function 3: search_by_ingredients
 def search_by_ingredients():
-    # Check to see if receipes are in the database
+    # Checks to see if receipes are in the database
     if session.query(Recipe.id).first() is None:
         print("\nNo recipes found in the database.")
         return

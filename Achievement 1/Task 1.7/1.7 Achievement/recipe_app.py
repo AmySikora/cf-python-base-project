@@ -122,10 +122,6 @@ def create_recipe():
     # Converts ingredient list to a string for storage
     ingredients_str = ", ".join(ingredients)
     recipe = Recipe(name=name, ingredients=ingredients_str, cooking_time=cooking_time)
-    recipe.calculate_difficulty()
-
-    # Creates and saves new recipe
-    recipe = Recipe(name=name, ingredients=ingredients_str, cooking_time=cooking_time)
     recipe.calc_difficulty()
 
     session.add(recipe)

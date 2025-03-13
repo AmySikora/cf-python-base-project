@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Recipe Project Apps
-    'recipes'
+    'recipes',
 ]
 
 ROOT_URLCONF = 'recipe_project.urls'

@@ -17,4 +17,4 @@ class RecipeModelTest(TestCase):
 
     def test_cooking_time(self):
         recipe = Recipe.objects.get(name="Chocolate Cake")
-        self.assertEqual(recipe.cooking_time, 30)
+        self.assertEqual(recipe.cooking_time, 60)

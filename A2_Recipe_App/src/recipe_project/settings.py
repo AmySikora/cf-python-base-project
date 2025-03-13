@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+     # Recipe Project Apps
+    'recipes',
 ]
 
 MIDDLEWARE = [
@@ -47,8 +49,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # Recipe Project Apps
-    'recipes',
 ]
 
 ROOT_URLCONF = 'recipe_project.urls'

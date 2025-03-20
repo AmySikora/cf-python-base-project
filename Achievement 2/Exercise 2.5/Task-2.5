@@ -1,0 +1,21 @@
+**Task-2.5: Model Updates and Changes**
+
+### **Current Recipe Model**
+
+class Recipe(models.Model):
+    name = models.CharField(max_length=255)  # Recipe name
+    description = models.TextField(blank=True, null=True)  # Short description
+    ingredients = models.TextField(help_text="List ingredients separated by commas")  # Ingredients list
+    cooking_time = models.PositiveIntegerField(help_text="Cooking time in minutes")  # Time in minutes
+    difficulty = models.CharField(max_length=20, blank=True, null=True)  # Difficulty level
+    pic = models.ImageField(upload_to='recipes', default='no_picture.jpg')  # Recipe image
+    instructions = models.TextField(help_text="Step-by-step cooking instructions")  # How to make the recipe
+
+    def __str__(self):
+        return self.name
+```
+
+### **I added a instruction field to the model, beacuse recipes need instructions**
+
+
+
